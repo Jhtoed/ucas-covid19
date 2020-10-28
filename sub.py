@@ -15,9 +15,9 @@ s = requests.Session()
 header = {"User-Agent": "Mozilla/5.0 (Linux; Android 10;  AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/045136 Mobile Safari/537.36 wxwork/3.0.16 MicroMessenger/7.0.1 NetType/WIFI Language/zh",}
 s.headers.update(header)
 
-user = "USERNAME"    # sep账号
-passwd = "PASSWORD"   # sep密码
-api_key = "API_KEY"  # server酱的api，填了可以微信通知打卡结果，不填没影响
+user = "980704206@qq.com"    # sep账号
+passwd = "suqin1993522"   # sep密码
+api_key = "SCU121205Ta36e2ad62fb3e429d590964003bbd2205f98fabdb6621"  # server酱的api，填了可以微信通知打卡结果，不填没影响
 
 
 def login(s: requests.Session, username, password):
