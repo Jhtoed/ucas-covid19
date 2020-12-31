@@ -10,6 +10,8 @@ from time import sleep
 from random import randint
 from datetime import datetime
 
+debug = False
+verify_cert = False
 
 s = requests.Session()
 header = {"User-Agent": "Mozilla/5.0 (Linux; Android 10;  AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/045136 Mobile Safari/537.36 wxwork/3.0.16 MicroMessenger/7.0.1 NetType/WIFI Language/zh",}
@@ -55,38 +57,56 @@ def submit(s: requests.Session, old: dict):
         'realname': old['realname'],
         'number': old['number'],
         'szgj_api_info': old['szgj_api_info'],
+        'szgj': old['szgj'],
+        'old_sfzx': old['sfzx'],
         'sfzx': old['sfzx'],
         'szdd': old['szdd'],
-        'ismoved': old['ismoved'],
+        'ismoved': 0,  # 如果前一天位置变化这个值会为1，第二天仍然获取到昨天的1，而事实上位置是没变化的，所以置0
+        # 'ismoved': old['ismoved'],
         'tw': old['tw'],
-        'sftjwh': old['sfsfbh'],
-        'sftjhb': old['sftjhb'],
+        'bztcyy': old['bztcyy'],
+        # 'sftjwh': old['sfsfbh'],  # 2020.9.16 del
+        # 'sftjhb': old['sftjhb'],  # 2020.9.16 del
         'sfcxtz': old['sfcxtz'],
-        'sfjcwhry': old['sfjcwhry'],
-        'sfjchbry': old['sfjchbry'],
+        'sfyyjc': old['sfyyjc'],
+        'jcjgqr': old['jcjgqr'],
+        # 'sfjcwhry': old['sfjcwhry'],  # 2020.9.16 del
+        # 'sfjchbry': old['sfjchbry'],  # 2020.9.16 del
         'sfjcbh': old['sfjcbh'],
+        'jcbhlx': old['jcbhlx'],
         'sfcyglq': old['sfcyglq'],
+        'gllx': old['gllx'],
         'sfcxzysx': old['sfcxzysx'],
         'old_szdd': old['szdd'],
-        'geo_api_info': old['old_city'],
+        'geo_api_info': old['old_city'],  # 保持昨天的结果
         'old_city': old['old_city'],
         'geo_api_infot': old['geo_api_infot'],
         'date': datetime.now(tz=pytz.timezone("Asia/Shanghai")).strftime("%Y-%m-%d"),
+        'fjsj': old['fjsj'],
+        'jcbhrq': old['jcbhrq'],
+        'glksrq': old['glksrq'],
+        'fxyy': old['fxyy'],
+        'jcjg': old['jcjg'],
+        'jcjgt': old['jcjgt'],
+        'qksm': old['qksm'],
+        'remark': old['remark'],
         'jcjgqk': old['jcjgqk'],
+        'jcwhryfs': old['jcwhryfs'],
+        'jchbryfs': old['jchbryfs'],
+        'gtshcyjkzt': old['gtshcyjkzt'],  # add @2020.9.16
+        'jrsfdgzgfxdq': old['jrsfdgzgfxdq'],  # add @2020.9.16
+        'jrsflj': old['jrsflj'],  # add @2020.9.16
         'app_id': 'ucas'}
-
+    
     r = s.post("https://app.ucas.ac.cn/ncov/api/default/save", data=new_daily)
     print("提交信息:", new_daily)
     # print(r.text)
     result = r.json()
     if result.get('m') == "操作成功":
         print("打卡成功")
-        if api_key:
-            message(api_key, result.get('m'), new_daily)
     else:
         print("打卡失败，错误信息: ", r.json().get("m"))
-        if api_key:
-            message(api_key, result.get('m'), new_daily)
+    message(api_key, result.get('m'), new_daily)
 
 
 def message(key, title, body):
@@ -95,6 +115,13 @@ def message(key, title, body):
     """
     msg_url = "https://sc.ftqq.com/{}.send?text={}&desp={}".format(key, title, body)
     requests.get(msg_url)
+    
+def report(username, password):
+    s = requests.Session()
+    s.verify = verify_cert  # 不验证证书
+    header = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10;  AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/045136 Mobile Safari/537.36 wxwork/3.0.16 MicroMessenger/7.0.1 NetType/WIFI Language/zh"
+    }
 
 
 if __name__ == "__main__":
@@ -106,3 +133,4 @@ if __name__ == "__main__":
     login(s, user, passwd)
     yesterday = get_daily(s)
     submit(s, yesterday)
+
